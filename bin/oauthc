@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 
 require 'rubygems'
+require 'pp'
 require 'highline/import'
 require 'oauth'
 require 'json'
