@@ -4,5 +4,4 @@ README.rdoc
 Rakefile
 bin/oauthc
 init.rb
-lib/oauthc.rb
-oauthc.gemspec
+lib/oauth_client.rb
