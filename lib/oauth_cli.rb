@@ -20,8 +20,16 @@ class OauthCli
       cfg_options =  YAML.load_file(CFG_FILE)
       opt = symbolize_keys(cfg_options[opt[:profile]]) if cfg_options[opt[:profile]]
     end
-    
-    return say " <%= color('#  ERROR: please provide method and uri', RED) %>" if method.to_s.empty? || uri.to_s.empty?
+
+    if opt[:h] || opt[:help] || method.to_s.empty? || uri.to_s.empty?
+      say " <%= color('#  ERROR: please provide method and uri', RED) %>" if method.to_s.empty? || uri.to_s.empty?
+      say "Usage:"
+      say "[repl] oauthc [options] <method> <uri> [<body>]"
+      say "options are:"
+      say "profile: --profile=<profile> -> put a .yml file to ~/.oauthconfig"
+      say "--host=<host> --consumer_key=<consumer_key> --consumer_secret=<consumer_secret> --token=<token> --token_secret=<token_secret>"
+      return
+    end
     
     response = execute(method, uri, body, opt)
     
