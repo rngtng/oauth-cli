@@ -5,7 +5,7 @@ require 'json'
 CFG_FILE = File.expand_path('~/.oauthconfig') 
 HighLine.track_eof = false #hotfix to make highline work
 
-class OauthClient
+class OauthCli
   def self.main(params, opt = {})
     #parse CLI input
     method, uri, body = params.delete_if do |kv|

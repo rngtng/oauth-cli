@@ -5,34 +5,40 @@ oauthc - a simple CLI client to test your oauth API easily
 [repl] oauthc [options] <method> <uri> [<body>]
 
 options may be:
-profile: --profile=<profile> -> put a .yml file to ~/.oauthconfig
-connection data: --host=<host> --consumer_key=<consumer_key> --consumer_secret=<consumer_secret> --token=<token> --token_secret=<token_secret>
-if method it *post* or *put* and no body is provided, you're asked for input
+ * profile: --profile=<profile> -> put a .yml file to ~/.oauthconfig
+ * connection data: --host=<host> --consumer_key=<consumer_key> --consumer_secret=<consumer_secret> --token=<token> --token_secret=<token_secret>
+ * if method it *post* or *put* and no body is provided, you're asked for input
+
 
 = HINT
  * use with repl gem for nice handling, see http://github.com/defunkt/repl
  * make sure to have rlwrap installed, too: http://utopia.knoware.nl/~hlub/rlwrap/
 
+
 = EXAMPLES
 oauthc was originaly developed to test the Qype API. So run these exmaples agains it:
 
-post /feedbacks '<feedback><link href="http://api.qype.com/v1/reviews/66"  rel="http://schemas.qype.com/review"/><comment><![CDATA[This review contains offending text]]></comment></feedback>'
-post /places/31/checkins '<checkins><point>53.5505,9.93631</point></checkins>'
-get /positions/53.55224,9.999/recommended_places
-get /locators/de600-hamburg/feed
-get /badges
-get /users/tobiasb/badges
-get /places/31.json?expand=popular_checkins
+ * post /feedbacks '<feedback><link href="http://api.qype.com/v1/reviews/66"  rel="http://schemas.qype.com/review"/><comment><![CDATA[This review contains offending text]]></comment></feedback>'
+ * post /places/31/checkins '<checkins><point>53.5505,9.93631</point></checkins>'
+ * get /positions/53.55224,9.999/recommended_places
+ * get /locators/de600-hamburg/feed
+ * get /badges
+ * get /users/tobiasb/badges
+ * get /places/31.json?expand=popular_checkins
 
 
 = TODO: 
 - save given keys to config
 
+
 = FAQ
 == What's the difference to the client provided by oauth gem?
-problem with oauth client provided with the gem is the lack of post request with body content as
-well as easy usage with repl to have proper CLI options
+problem with oauth cli client provided with the gem is the lack of post request with body content as well as easy usage with repl to have proper CLI options
+
 
 = Other
-easy way to create your gem:
-http://buzaz.com/index.php/2010/01/03/how-to-build-a-ruby-gem/
+Easy way to create your gem:
+ * http://buzaz.com/index.php/2010/01/03/how-to-build-a-ruby-gem/
+ * http://railscasts.com/episodes/135-making-a-gem
+ * http://docs.rubygems.org/read/chapter/20
+ * http://rubygems.org/

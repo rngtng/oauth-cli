@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
 require 'rubygems'
-require 'oauth_client'
+require 'oauth_cli'
 
-OauthClient.main($*)
+OauthCli.main($*)

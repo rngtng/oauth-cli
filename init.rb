@@ -1,1 +1,1 @@
-require 'oauth_client'
+require 'oauth_cli'
