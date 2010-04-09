@@ -1,12 +1,12 @@
-= oauth-cli - a simple CLI client to test your oauth API easily
+= oauth-cli 
+a simple CLI client to test your oauth API easily
 
-
-== INSTALL
-oauth-cli is provided as gem, install with:
+== Installation
+oauth-cli is packed as gem, install with:
  gem install oauth-cli
 
 
-== USAGE
+== Usage
 [repl] oauthc [options] <method> <uri> [<body>]
 
 options may be:
@@ -15,38 +15,31 @@ options may be:
 * if method it *post* or *put* and no body is provided, you're asked for input
 
 
-== HINT
+== Examples
+oauthc was originally developed to test the {Qype API}[http://www.qype.com/developers/api]. Run these examples agains it:
+
+  post /feedbacks '<feedback><link href="http://api.qype.com/v1/reviews/66"  rel="http://schemas.qype.com/review"/><comment><![CDATA[This review contains offending text]]></comment></feedback>'
+  post /places/31/checkins '<checkins><point>53.5505,9.93631</point></checkins>'
+  get /positions/53.55224,9.999/recommended_places
+  get /locators/de600-hamburg/feed
+  get /badges
+  get /users/tobiasb/badges
+  get /places/31.json?expand=popular_checkins
+
+
+== Hints
 * use with repl gem for nice handling, see http://github.com/defunkt/repl
-* make sure to have rlwrap installed, too: http://utopia.knoware.nl/~hlub/rlwrap/
+* make sure to have rlwrap installed, too: http://utopia.knoware.nl/~hlub/rlwrap1
 
 
-== EXAMPLES
-oauthc was originaly developed to test the Qype API. So run these exmaples agains it:
-
-* post /feedbacks '<feedback><link href="http://api.qype.com/v1/reviews/66"  rel="http://schemas.qype.com/review"/><comment><![CDATA[This review contains offending text]]></comment></feedback>'
-* post /places/31/checkins '<checkins><point>53.5505,9.93631</point></checkins>'
-* get /positions/53.55224,9.999/recommended_places
-* get /locators/de600-hamburg/feed
-* get /badges
-* get /users/tobiasb/badges
-* get /places/31.json?expand=popular_checkins
-
-
-== TODO: 
+== Todos
 * save given keys to config
 
 
 == FAQ
-=== What's the difference to the client provided by oauth gem?
+
+==== What's the difference to the client provided by oauth gem?
 problem with oauth cli client provided with the gem is the lack of post request with body content as well as easy usage with repl to have proper CLI options
-
-
-== Other
-Easy way to create your gem:
-* http://buzaz.com/index.php/2010/01/03/how-to-build-a-ruby-gem/
-* http://railscasts.com/episodes/135-making-a-gem
-* http://docs.rubygems.org/read/chapter/20
-* http://rubygems.org/
 
 
 == Copyright
@@ -59,3 +52,11 @@ Permission is hereby granted, free of charge, to any person obtaining a copy of 
 The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+
+== More
+Easy way to create your gem:
+* http://buzaz.com/index.php/2010/01/03/how-to-build-a-ruby-gem
+* http://railscasts.com/episodes/135-making-a-gem
+* http://docs.rubygems.org/read/chapter/20
+* http://rubygems.org
