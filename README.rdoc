@@ -34,7 +34,14 @@ oauthc was originally developed to test the {Qype API}[http://www.qype.com/devel
 
 == Todos
 * save given keys to config
-
+* better support for getting authkeys
+* better readonly support
+* set default content & mime type
+* set body content type json/xml
+* get rid of repl?
+* json + xml syntax highlight -> awesome_print
+* testing + better docs
+* check oauth client, streamline!?
 
 == FAQ
 

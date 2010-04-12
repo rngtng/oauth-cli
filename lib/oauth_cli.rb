@@ -26,7 +26,7 @@ class OauthCli
       say "Usage:"
       say "[repl] oauthc [options] <method> <uri> [<body>]"
       say "options are:"
-      say "profile: --profile=<profile> -> put a .yml file to ~/.oauthconfig"
+      say "--profile=<profile> -> put a .yml file to ~/.oauthconfig"
       say "--host=<host> --consumer_key=<consumer_key> --consumer_secret=<consumer_secret> --token=<token> --token_secret=<token_secret>"
       return
     end
