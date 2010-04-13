@@ -2,12 +2,12 @@
 
 Gem::Specification.new do |s|
   s.name = %q{oauth-cli}
-  s.version = "0.0.1"
+  s.version = "0.0.2"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 1.2") if s.respond_to? :required_rubygems_version=
   s.authors = ["rngtng - Tobias Bielohlawek"]
   s.cert_chain = ["/Users/tobiasb/.ssh/gem-public_cert.pem"]
-  s.date = %q{2010-04-09}
+  s.date = %q{2010-04-13}
   s.default_executable = %q{oauthc}
   s.description = %q{A simple CLI client to test your oauth API easily}
   s.email = %q{tobi @nospam@ rngtng.com}
@@ -30,17 +30,14 @@ Gem::Specification.new do |s|
       s.add_runtime_dependency(%q<highline>, [">= 1.5.1"])
       s.add_runtime_dependency(%q<json>, [">= 1.1.9"])
       s.add_runtime_dependency(%q<oauth>, [">= 0.3.6"])
-      s.add_runtime_dependency(%q<repl>, [">= 0.2.1"])
     else
       s.add_dependency(%q<highline>, [">= 1.5.1"])
       s.add_dependency(%q<json>, [">= 1.1.9"])
       s.add_dependency(%q<oauth>, [">= 0.3.6"])
-      s.add_dependency(%q<repl>, [">= 0.2.1"])
     end
   else
     s.add_dependency(%q<highline>, [">= 1.5.1"])
     s.add_dependency(%q<json>, [">= 1.1.9"])
     s.add_dependency(%q<oauth>, [">= 0.3.6"])
-    s.add_dependency(%q<repl>, [">= 0.2.1"])
   end
 end

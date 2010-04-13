@@ -1,3 +1,21 @@
+// 0.0.3
+// ---------------------------
+// on exit, ask if connection data should be saved to profile
+// show list of example profiles
+
+0.0.2
+---------------------------
+got rid of repl dependency
+added default profile, use $OAUTHC_CONFIG_FILE to customize default config file path
+show profile name in prompt
+updated help for CLI and interactive mode
+ask for URI if not given
+show error if wrong http method verb
+inline authorization process, triggered by 'auth' command
+added option to set default content_type/mime_type
+nice json syntax highlight with awesome_print
+set default content & mime type
+
 
 0.0.1
 ---------------------------

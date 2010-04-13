@@ -1,6 +1,132 @@
 #!/usr/bin/env ruby
 
 require 'rubygems'
-require 'oauth_cli'
+require 'pp'
+require 'lib/oauth_cli'
 
-OauthCli.main($*)
+CFG_FILE = ENV['OAUTHC_CONFIG_FILE'] || File.expand_path('~/.oauthconfig')
+
+def show_help
+  say <<-help
+Usage: oauthc [options] [http_method_verb uri [body]]
+
+Options:
+  --help             Display this message
+  --profile          Name of preset profile to load, put profiles to a .yml file in ~/.oauthconfig
+  --host             Host to connect to
+  --consumer_key     Consumer Key
+  --consumer_secret  Consumer Secret
+  --token            Authentication Token
+  --token_secret     Authentication Secret
+  --mime_type        Set mime type, default: application/xml
+  --content_type     Set content type, default: application/xml
+
+Request date (leave blank for interactive mode)
+   http_method_verb  nay method of get, post, put or delete
+   uri               Uri to request
+   body              Body attached to request
+
+Bug reports, suggestions, updates:
+http://http://github.com/rngtng/oauth-cli/issues
+help
+  exit
+end
+
+def show_commands
+  say <<-help
+Interactive Commands:
+    get    uri         Get request for given uri
+    post   uri [body]  Post request for given uri, asks for body if not provided
+    put    uri [body]  Put request for given uri, asks for body if not provided
+    delete uri         Delete request for given uri
+
+    auth               Request authentication token
+    help               Display this message
+help
+end
+
+if ARGV.empty? || ARGV.any? { |arg| %w( -h --help -help help ).include?(arg) }
+  show_help
+end
+
+#parse CLI input
+opt = {}
+method, uri, body = ARGV.clone.delete_if do |kv|
+  next opt[$1.to_sym] = $2 if kv =~ /-?-([^=]+)=(.+)$/
+  false
+end
+profile = opt[:profile] || opt[:p] #shortcut for profile
+
+#load external config if profile given
+if profile && File.exists?(CFG_FILE)
+  cfg_options = YAML.load_file(CFG_FILE)
+  profile = 'default' if !cfg_options[profile] && cfg_options['default']
+  
+  unless cfg_options[profile]
+    say " <%= color('#  ERROR: Profile #{profile} not found', RED) %>"
+    show_help
+  end
+
+  cfg_options[profile].each { |key, value| opt[key.to_sym] = value }  #symbolize_keys  
+end
+
+######## CREATE client
+
+@client = OauthCli.new(opt)
+
+if method && uri
+  @client.request(method, uri, body)
+  exit
+end
+
+######## START Interactive mode
+
+## following lines are shameless stolen from repl ->  http://http://github.com/defunkt/repl
+# completion_dir = ENV['REPL_COMPLETION_DIR'] || "~/.repl"
+# if File.exists?(cdir = File.expand_path(completion_dir))
+#   script = ARGV.detect { |a| a !~ /^-/ }
+#   if script
+#     cfile = Dir[cdir + '/' + File.basename(script)].first
+#     cfile = nil if cfile && !File.exists?(cfile)
+#   end
+# end
+
+history_dir = ENV['OAUTHC_HISTORY_DIR'] || "~/"
+if File.exists?(hdir = File.expand_path(history_dir))
+  if script = ARGV.detect { |a| a !~ /^-/ }
+    script = File.basename(script)
+    hfile = "#{hdir}/.#{oauthc}_history" #TODO include profile name???
+  end
+end
+
+if !ENV['__REPL_WRAPPED'] && system("which rlwrap > /dev/null 2> /dev/null")
+  ENV['__REPL_WRAPPED'] = '0'
+
+  rlargs = ""
+  #rlargs << " -f #{cfile}" if cfile
+  rlargs << " -H #{hfile}" if hfile
+
+  exec "rlwrap #{rlargs} #$0 #{ARGV.join(' ')}"
+end
+
+
+loop do
+  print ENV['REPL_PROMPT'] || "#{opt[:name] || profile} >> "
+
+  begin
+    command, uri, body = $stdin.gets.chomp.split(' ')
+    
+    next warn(show_commands) if command =~ /^(help|\?)$/
+    next warn("Use Ctrl-D (i.e. EOF) to exit") if command =~ /^(exit|quit)$/
+        
+    @client.request(command, uri, body)
+    next
+  rescue NoMethodError, Interrupt
+    #save_config unless profile
+    puts
+    exit
+  rescue
+  end
+
+end
+
