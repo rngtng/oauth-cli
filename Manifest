@@ -1,7 +1,7 @@
-CHANGELOG
-Manifest
-README.rdoc
-Rakefile
 bin/oauthc
+CHANGELOG
 init.rb
 lib/oauth_cli.rb
+Manifest
+Rakefile
+README.rdoc

@@ -7,12 +7,36 @@ oauth-cli is packed as gem, install with:
 
 
 == Usage
-[repl] oauthc [options] <method> <uri> [<body>]
+oauthc [options] [http_method_verb uri [body]]
 
-options may be:
-* profile: --profile=<profile> -> put a .yml file to ~/.oauthconfig
-* connection data: --host=<host> --consumer_key=<consumer_key> --consumer_secret=<consumer_secret> --token=<token> --token_secret=<token_secret>
-* if method it *post* or *put* and no body is provided, you're asked for input
+Options:
+  --help             Display this message
+  --profile          Name of preset profile to load, put profiles to a .yml file in ~/.oauthconfig
+  --host             Host to connect to
+  --consumer_key     Consumer Key
+  --consumer_secret  Consumer Secret
+  --token            Authentication Token
+  --token_secret     Authentication Secret
+  --mime_type        Set mime type, default: application/xml
+  --content_type     Set content type, default: application/xml
+
+Request params (leave blank for interactive mode)
+   http_method_verb  nay method of get, post, put or delete
+   uri               Uri to request
+   body              Body attached to request
+
+
+=== Interactive Mode
+if no request params are specified, interactive mode is started. Those commands are available:
+
+Interactive Commands:
+    get    uri         Get request for given uri
+    post   uri [body]  Post request for given uri, asks for body if not provided
+    put    uri [body]  Put request for given uri, asks for body if not provided
+    delete uri         Delete request for given uri
+
+    auth               Request authentication token
+    help               Display this message
 
 
 == Examples
@@ -28,15 +52,19 @@ oauthc was originally developed to test the {Qype API}[http://www.qype.com/devel
 
 
 == Hints
-* use with repl gem for nice handling, see http://github.com/defunkt/repl
+* use with repl gem for nice handling, see: http://github.com/defunkt/repl
 * make sure to have rlwrap installed, too: http://utopia.knoware.nl/~hlub/rlwrap1
+* Bug reports, suggestions, updates: http://github.com/rngtng/oauth-cli/issues
 
 
 == Todos
-* save given keys to config
+* save given keys to config, e-g introduce 'save' command
+* go into config mode, if no profiles found and no params specified
 * better support for getting authkeys
 * testing + better docs
 * check oauth client, streamline!?
+* add autocomplete
+* add auth profiles for Qype, Twitter etc!?
 
 == FAQ
 

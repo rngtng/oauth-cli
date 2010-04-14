@@ -8,6 +8,7 @@ CFG_FILE = ENV['OAUTHC_CONFIG_FILE'] || File.expand_path('~/.oauthconfig')
 
 def show_help
   say <<-help
+oauthc version 0.0.2
 Usage: oauthc [options] [http_method_verb uri [body]]
 
 Options:
@@ -21,13 +22,13 @@ Options:
   --mime_type        Set mime type, default: application/xml
   --content_type     Set content type, default: application/xml
 
-Request date (leave blank for interactive mode)
-   http_method_verb  nay method of get, post, put or delete
+Request params (leave blank for interactive mode)
+   http_method_verb  any method of get, post, put or delete
    uri               Uri to request
    body              Body attached to request
 
 Bug reports, suggestions, updates:
-http://http://github.com/rngtng/oauth-cli/issues
+http://github.com/rngtng/oauth-cli/issues
 help
   exit
 end
@@ -58,7 +59,12 @@ end
 profile = opt[:profile] || opt[:p] #shortcut for profile
 
 #load external config if profile given
-if profile && File.exists?(CFG_FILE)
+if profile 
+  unless File.exists?(CFG_FILE)
+    say " <%= color('#  ERROR: Profile File #{CFG_FILE} not found', RED) %>"
+    show_help
+  end
+  
   cfg_options = YAML.load_file(CFG_FILE)
   profile = 'default' if !cfg_options[profile] && cfg_options['default']
   

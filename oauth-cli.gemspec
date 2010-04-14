@@ -6,20 +6,20 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 1.2") if s.respond_to? :required_rubygems_version=
   s.authors = ["rngtng - Tobias Bielohlawek"]
-  s.cert_chain = ["/Users/tobiasb/.ssh/gem-public_cert.pem"]
-  s.date = %q{2010-04-13}
+  s.cert_chain = ["/Users/ted/.ssh/gem-public_cert.pem"]
+  s.date = %q{2010-04-14}
   s.default_executable = %q{oauthc}
   s.description = %q{A simple CLI client to test your oauth API easily}
   s.email = %q{tobi @nospam@ rngtng.com}
   s.executables = ["oauthc"]
-  s.extra_rdoc_files = ["CHANGELOG", "README.rdoc", "bin/oauthc", "lib/oauth_cli.rb"]
-  s.files = ["CHANGELOG", "Manifest", "README.rdoc", "Rakefile", "bin/oauthc", "init.rb", "lib/oauth_cli.rb", "oauth-cli.gemspec"]
+  s.extra_rdoc_files = ["bin/oauthc", "CHANGELOG", "lib/oauth_cli.rb", "README.rdoc"]
+  s.files = ["bin/oauthc", "CHANGELOG", "init.rb", "lib/oauth_cli.rb", "Manifest", "Rakefile", "README.rdoc", "oauth-cli.gemspec"]
   s.homepage = %q{http://github.com/rngtng/oauth-cli}
   s.rdoc_options = ["--line-numbers", "--inline-source", "--title", "Oauth-cli", "--main", "README.rdoc"]
   s.require_paths = ["lib"]
   s.rubyforge_project = %q{oauth-cli}
   s.rubygems_version = %q{1.3.6}
-  s.signing_key = %q{/Users/tobiasb/.ssh/gem-private_key.pem}
+  s.signing_key = %q{/Users/ted/.ssh/gem-private_key.pem}
   s.summary = %q{A simple CLI client to test your oauth API easily}
 
   if s.respond_to? :specification_version then
