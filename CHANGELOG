@@ -1,11 +1,18 @@
-// planned: 0.0.4
+// planned: 0.0.X
 // ---------------------------
 // on exit, ask if connection data should be saved to profile
 // show list of example profiles
 
+0.0.4
+---------------------------
+introduced easy auth (by now for Qype API only)
+added tests
+"http://" for any host options got optional
+
 0.0.3
 ---------------------------
 minor fix to resolve dependencies 
+
 
 0.0.2
 ---------------------------

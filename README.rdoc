@@ -30,13 +30,13 @@ Request params (leave blank for interactive mode)
 if no request params are specified, interactive mode is started. Those commands are available:
 
 Interactive Commands:
-    get    uri         Get request for given uri
-    post   uri [body]  Post request for given uri, asks for body if not provided
-    put    uri [body]  Put request for given uri, asks for body if not provided
-    delete uri         Delete request for given uri
+    get     uri          Get request for given uri
+    post    uri  [body]  Post request for given uri, asks for body if not provided
+    put     uri  [body]  Put request for given uri, asks for body if not provided
+    delete  uri          Delete request for given uri
 
-    auth               Request authentication token
-    help               Display this message
+    auth                 Request authentication token
+    help                 Display this message
 
 
 == Examples
@@ -52,7 +52,7 @@ oauthc was originally developed to test the {Qype API}[http://www.qype.com/devel
 
 
 == Hints
-* make sure to have rlwrap installed, to get CLI history support: http://utopia.knoware.nl/~hlub/rlwrap1
+* make sure to have rlwrap installed, to get CLI history support: http://utopia.knoware.nl/~hlub/rlwrap (or "port install rlwarp")
 
 
 * Bug reports, suggestions, updates: http://github.com/rngtng/oauth-cli/issues

@@ -11,8 +11,10 @@ HighLine.track_eof = false #hotfix to make highline work
 
 class OauthCli
 
-  def initialize( options = {})
-    @options      = options
+  attr_reader :options
+  
+  def initialize(options = {})
+    @options = options
 
     if options[:consumer_key].to_s.empty?
       color = 'YELLOW'
@@ -21,10 +23,15 @@ class OauthCli
       say " <%= color('# oauthc --consumer_key=<consumer_key> --consumer_secret=<consumer_secret>', #{color}) %>"
       say " <%= color('# -------------------------------------------------------------------------', #{color}) %>"
       #please get a key here: http://#{options[:host]}/api_consumers"
-      exit
+      return
     end
-
-    @consumer     = OAuth::Consumer.new(@options[:consumer_key], @options[:consumer_secret], :site => "http://#{options[:host]}")
+    
+    #add http if missing
+    [:host, :reg_host, :auth_host].each do |key|
+      @options[key] = "http://#{@options[key]}" unless @options[key] =~ /^http/
+    end
+    
+    @consumer     = OAuth::Consumer.new(@options[:consumer_key], @options[:consumer_secret], :site => @options[:host])
     @access_token = OAuth::AccessToken.new(@consumer, @options[:token], @options[:token_secret]) if @options[:token]
   end
 
@@ -67,8 +74,8 @@ class OauthCli
 
     uri  = ask " |-- request uri >> " if !uri
     body = ask " |-- request body >> " if !body && (method == "post" || method == "put")
-
-    url = "http://#{@options[:host]}#{uri}"
+    
+    url = @options[:host] + uri
 
     @options[:mime_type]    ||= (url =~ /\.json/) ? "application/json" : "application/xml"
     @options[:content_type] ||= (url =~ /\.json/) ? "application/json" : "application/xml"
@@ -92,6 +99,5 @@ class OauthCli
     body = " <%= color('# #{$1.gsub("'", "")} ', RED) %>" if body =~ /<pre>(.+)<\/pre>/
     say body
   end
-
 
 end

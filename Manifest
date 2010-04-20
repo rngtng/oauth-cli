@@ -6,3 +6,6 @@ bin/oauthc
 init.rb
 lib/oauth_cli.rb
 oauth-cli.gemspec
+test/helper.rb
+test/test_oauth_cli.rb
+test/test_oauthc.rb
