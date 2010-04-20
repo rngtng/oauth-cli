@@ -3,7 +3,7 @@ require 'oauth'
 require 'json'
 
 begin
-require 'ap' 
+  require 'ap' #try to load awesome_print for nice json output
 rescue LoadError 
 end
 
@@ -70,7 +70,7 @@ class OauthCli
     say " <%= color('# -------------------------------------------------------------------------', #{color}) %>"
 
     body = response.body
-    if header.content_type =~ /.json/
+    if header.content_type =~ /json/
       body = JSON.parse(body)
       ap(body) rescue say(JSON.pretty_generate(body))
       return

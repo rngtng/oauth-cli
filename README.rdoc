@@ -52,18 +52,19 @@ oauthc was originally developed to test the {Qype API}[http://www.qype.com/devel
 
 
 == Hints
-* use with repl gem for nice handling, see: http://github.com/defunkt/repl
-* make sure to have rlwrap installed, too: http://utopia.knoware.nl/~hlub/rlwrap1
+* make sure to have rlwrap installed, to get CLI history support: http://utopia.knoware.nl/~hlub/rlwrap1
+
+
 * Bug reports, suggestions, updates: http://github.com/rngtng/oauth-cli/issues
 
 
 == Todos
-* save given keys to config, e-g introduce 'save' command
+* save given keys to config, e.g. introduce 'save' command
 * go into config mode, if no profiles found and no params specified
 * better support for getting authkeys
 * testing + better docs
 * check oauth client, streamline!?
-* add autocomplete
+* add autocomplete for interactive commands
 * add auth profiles for Qype, Twitter etc!?
 
 == FAQ
