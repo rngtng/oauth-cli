@@ -4,7 +4,7 @@ require 'json'
 
 begin
   require 'ap' #try to load awesome_print for nice json output
-rescue LoadError 
+rescue LoadError
 end
 
 HighLine.track_eof = false #hotfix to make highline work
@@ -24,24 +24,37 @@ class OauthCli
       exit
     end
 
-    @consumer     = OAuth::Consumer.new(options[:consumer_key], options[:consumer_secret], :site => "http://#{options[:host]}")
-    @access_token = OAuth::AccessToken.new(@consumer, options[:token], options[:token_secret]) if options[:token]
+    @consumer     = OAuth::Consumer.new(@options[:consumer_key], @options[:consumer_secret], :site => "http://#{options[:host]}")
+    @access_token = OAuth::AccessToken.new(@consumer, @options[:token], @options[:token_secret]) if @options[:token]
   end
 
   def request(method, uri, body = nil)
     if method =~ /auth/
       @request_token = @consumer.get_request_token({}, "oauth_callback" => "oob")
+      @options[:auth_host] ||= "#{@options[:host].gsub('api.', 'www.').gsub('v1/', '')}/mobile/authorize?oauth_token=" #That's for Qype only!!
       color = 'YELLOW'
-      say " <%= color('# -------------------------------------------------------------------------', #{color}) %>"
-      #say "To authorize, go to:\n  <%= color('http://#{options[:host].gsub('api.', 'www.')}/mobile/authorize?oauth_token=#{@request_token.token}', BOLD, UNDERLINE) %>\n\n"
-      verifier = ask " Token Verifier >>"
+      say " <%= color('# To authorize, go to ...', #{color}) %>"
+      say " <%= '#   ' + color('http://#{@options[:auth_host]}#{@request_token.token}', BOLD, UNDERLINE) %>\n"
+      say " <%= color('#  ... and enter given token verifier:', #{color}) %>"
+      verifier = ask " |-- verifier >> "
 
-      @access_token = @request_token.get_access_token({}, "oauth_verifier" => verifier)
-      
-      options[:token] = @access_token.token
-      options[:token_secret] = @access_token.secret
-      
-      say " <%= color('# -------------------------------------------------------------------------', #{color}) %>"
+      begin
+        @access_token = @request_token.get_access_token({}, "oauth_verifier" => verifier)
+
+        @options[:token] = @access_token.token
+        @options[:token_secret] = @access_token.secret
+
+        color = 'GREEN'
+        say " <%= color('# -------------------------------------------------------------------------', #{color}) %>"
+        say " <%= color('# Authorization SUCCESSFUL', BOLD, #{color}) %>"
+        say " <%= color('# -------------------------------------------------------------------------', #{color}) %>"
+      rescue
+        color = 'RED'
+        say " <%= color('# -------------------------------------------------------------------------', #{color}) %>"
+        say " <%= color('# Authorization FAILED', BOLD, #{color}) %>"
+        say " <%= color('# -------------------------------------------------------------------------', #{color}) %>"
+      end
+      return
     end
 
     unless %w(get post put delete).include? method.to_s
@@ -75,7 +88,7 @@ class OauthCli
       ap(body) rescue say(JSON.pretty_generate(body))
       return
     end
-    
+
     body = " <%= color('# #{$1.gsub("'", "")} ', RED) %>" if body =~ /<pre>(.+)<\/pre>/
     say body
   end

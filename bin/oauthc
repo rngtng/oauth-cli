@@ -2,13 +2,13 @@
 
 require 'rubygems'
 require 'pp'
-require 'oauth_cli'
+require 'lib/oauth_cli'
 
 CFG_FILE = ENV['OAUTHC_CONFIG_FILE'] || File.expand_path('~/.oauthconfig')
 
 def show_help
   say <<-help
-oauthc version 0.0.3
+oauthc version 0.0.4
 Usage: oauthc [options] [http_method_verb uri [body]]
 
 Options:
@@ -101,7 +101,7 @@ history_dir = ENV['OAUTHC_HISTORY_DIR'] || "~/"
 if File.exists?(hdir = File.expand_path(history_dir))
   if script = ARGV.detect { |a| a !~ /^-/ }
     script = File.basename(script)
-    hfile = "#{hdir}/.#{oauthc}_history" #TODO include profile name???
+    hfile = "#{hdir}/.oauthc_history" #TODO include profile name???
   end
 end
 
@@ -131,7 +131,7 @@ loop do
     #save_config unless profile
     puts
     exit
-  rescue
+  #rescue
   end
 
 end
