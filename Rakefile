@@ -2,7 +2,7 @@ require 'rubygems'
 require 'rake'
 require 'echoe'
 
-Echoe.new('oauth-cli', '0.0.2') do |p|
+Echoe.new('oauth-cli', '0.0.3') do |p|
   p.description    = "A simple CLI client to test your oauth API easily"
   p.url            = "http://github.com/rngtng/oauth-cli"
   p.author         = "rngtng - Tobias Bielohlawek"

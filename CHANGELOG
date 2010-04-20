@@ -1,7 +1,11 @@
-// 0.0.3
+// planned: 0.0.4
 // ---------------------------
 // on exit, ask if connection data should be saved to profile
 // show list of example profiles
+
+0.0.3
+---------------------------
+minor fix to resolve dependencies 
 
 0.0.2
 ---------------------------

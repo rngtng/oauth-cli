@@ -1,7 +1,8 @@
-bin/oauthc
 CHANGELOG
+Manifest
+README.rdoc
+Rakefile
+bin/oauthc
 init.rb
 lib/oauth_cli.rb
-Manifest
-Rakefile
-README.rdoc
+oauth-cli.gemspec

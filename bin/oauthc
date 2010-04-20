@@ -2,13 +2,13 @@
 
 require 'rubygems'
 require 'pp'
-require 'lib/oauth_cli'
+require 'oauth_cli'
 
 CFG_FILE = ENV['OAUTHC_CONFIG_FILE'] || File.expand_path('~/.oauthconfig')
 
 def show_help
   say <<-help
-oauthc version 0.0.2
+oauthc version 0.0.3
 Usage: oauthc [options] [http_method_verb uri [body]]
 
 Options:
