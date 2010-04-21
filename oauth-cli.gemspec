@@ -7,7 +7,7 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = Gem::Requirement.new(">= 1.2") if s.respond_to? :required_rubygems_version=
   s.authors = ["rngtng - Tobias Bielohlawek"]
   s.cert_chain = ["/Users/tobiasb/.ssh/gem-public_cert.pem"]
-  s.date = %q{2010-04-20}
+  s.date = %q{2010-04-21}
   s.default_executable = %q{oauthc}
   s.description = %q{A simple CLI client to test your oauth API easily}
   s.email = %q{tobi @nospam@ rngtng.com}

@@ -3,7 +3,6 @@ Manifest
 README.rdoc
 Rakefile
 bin/oauthc
-init.rb
 lib/oauth_cli.rb
 oauth-cli.gemspec
 test/helper.rb

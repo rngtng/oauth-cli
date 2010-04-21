@@ -2,9 +2,15 @@
 
 require 'rubygems'
 require 'pp'
-require 'oauth_cli'
+begin
+  require "#{File.dirname(File.dirname(File.expand_path(__FILE__)))}/lib/oauth_cli"
+rescue LoadError
+  require "oauth_cli"
+end
 
 CFG_FILE = ENV['OAUTHC_CONFIG_FILE'] || File.expand_path('~/.oauthconfig')
+
+#http://api.betterbecool.com/v1/places/1197081
 
 def show_help
   say <<-help
