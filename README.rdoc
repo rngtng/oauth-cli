@@ -72,6 +72,10 @@ oauthc was originally developed to test the {Qype API}[http://www.qype.com/devel
 ==== What's the difference to the client provided by oauth gem?
 problem with oauth cli client provided with the gem is the lack of post request with body content as well as easy usage with repl to have proper CLI options
 
+==== Are there other clients of similar manner?
+Yes: http://github.com/marcel/twurl
+Very similar but Twitter specific. I whish I'd spot this project earlier ;-)
+
 
 == Copyright
 The MIT License
