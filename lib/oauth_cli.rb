@@ -22,7 +22,7 @@ class OauthCli
       say " <%= color('# no consumer_key provided, please create a profile or call the script with:', #{color}) %>"
       say " <%= color('# oauthc --consumer_key=<consumer_key> --consumer_secret=<consumer_secret>', #{color}) %>"
       say " <%= color('# -------------------------------------------------------------------------', #{color}) %>"
-      #please get a key here: http://#{options[:host]}/api_consumers"
+      #please get a key here: #{options[:host]}/api_consumers"
       return
     end
     
@@ -41,7 +41,7 @@ class OauthCli
       @options[:auth_host] ||= "#{@options[:host].gsub('api.', 'www.').gsub('v1/', '')}/mobile/authorize?oauth_token=" #That's for Qype only!!
       color = 'YELLOW'
       say " <%= color('# To authorize, go to ...', #{color}) %>"
-      say " <%= '#   ' + color('http://#{@options[:auth_host]}#{@request_token.token}', BOLD, UNDERLINE) %>\n"
+      say " <%= '#   ' + color('#{@options[:auth_host]}#{@request_token.token}', BOLD, UNDERLINE) %>\n"
       say " <%= color('#  ... and enter given token verifier:', #{color}) %>"
       verifier = ask " |-- verifier >> "
 
