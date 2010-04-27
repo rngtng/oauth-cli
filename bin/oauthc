@@ -52,7 +52,7 @@ Interactive Commands:
 help
 end
 
-if ARGV.empty? || ARGV.any? { |arg| %w( -h --help -help help ).include?(arg) }
+if ARGV.any? { |arg| %w( -h --help -help help ).include?(arg) }
   show_help
 end
 
@@ -64,23 +64,38 @@ method, uri, body = ARGV.clone.delete_if do |kv|
 end
 profile = opt[:profile] || opt[:p] #shortcut for profile
 
-#load external config if profile given
-if profile 
-  unless File.exists?(CFG_FILE)
-    say " <%= color('#  ERROR: Profile File #{CFG_FILE} not found', RED) %>"
-    show_help
-  end
-  
-  cfg_options = YAML.load_file(CFG_FILE)
-  profile = 'default' if !cfg_options[profile] && cfg_options['default']
-  
-  unless cfg_options[profile]
-    say " <%= color('#  ERROR: Profile #{profile} not found', RED) %>"
-    show_help
-  end
+@profiles = YAML.load_file(CFG_FILE) if File.exists?(CFG_FILE)
 
-  cfg_options[profile].each { |key, value| opt[key.to_sym] = value }  #symbolize_keys  
+#find default profile
+if @profiles && (profile.nil? || @profiles[profile].nil?)
+  @profiles.each do |key, values|
+    profile = key if values['default']
+  end
 end
+
+#give profile selection
+if @profiles && (profile.nil? || @profiles[profile].nil?)
+  say " <%= 'Select one of the available profiles or leave empty to create new one' %>"
+  @nr_profiles = @profiles.map
+  #say " <%= ' 0.  - create new one -' %>"
+  @nr_profiles.each_with_index do |profile, index|
+    say " <%= ' #{index+1}. #{profile.first}' %>"
+  end
+  profile = ask '  >> '
+  profile  = @nr_profiles[profile.to_i-1].first if profile == profile.to_i.to_s && @nr_profiles[profile.to_i-1]
+end
+
+@profiles[profile].each { |key, value| opt[key.to_sym] = value }  if @profiles[profile] #symbolize_keys
+
+if opt[:host].to_s.empty? || opt[:consumer_key].to_s.empty? || opt[:consumer_secret].to_s.empty?
+  
+end
+
+#    unless cfg_options[profile]
+#      say " <%= color('#  ERROR: Profile #{profile} not found', RED) %>"
+#      show_help
+#    end
+#
 
 ######## CREATE client
 
@@ -117,6 +132,8 @@ if !ENV['__REPL_WRAPPED'] && system("which rlwrap > /dev/null 2> /dev/null")
   rlargs = ""
   #rlargs << " -f #{cfile}" if cfile
   rlargs << " -H #{hfile}" if hfile
+  
+  ARGV << "-p=#{profile}" if profile
 
   exec "rlwrap #{rlargs} #$0 #{ARGV.join(' ')}"
 end
@@ -127,10 +144,10 @@ loop do
 
   begin
     command, uri, body = $stdin.gets.chomp.split(' ')
-    
+
     next warn(show_commands) if command =~ /^(help|\?)$/
     next warn("Use Ctrl-D (i.e. EOF) to exit") if command =~ /^(exit|quit)$/
-        
+
     @client.request(command, uri, body)
     next
   rescue NoMethodError, Interrupt
