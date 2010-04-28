@@ -18,6 +18,10 @@ class TestOauthCli < Test::Unit::TestCase
     assert_equal ['get', '/users?name=test', nil, {:host => 'http://host.com'}, 'test'], OauthCli.parse_args(args)
   end
   
+  def test_should_not_be_connected_on_empty_args
+    assert !OauthCli.new.connected?
+  end
+  
   def test_should_add_http_to_host
     opt = { :host => "api.bbc.com", :auth_host => "http://test.domain", :reg_host => "https://test.domain", :consumer_key => "dummy_key"}
     @client = OauthCli.new(opt)

@@ -12,7 +12,12 @@ class TestOauthCli < Test::Unit::TestCase
   end
   
   def _test_should_show_error_on_profile
-    output = `#{@oauthc} -p unknown`
+    require 'highline/import'
+    HighLine.any_instance.stubs(:choose).returns("")
+    
+    OauthCli.stubs(:parse_args).returns(['get', '/asd', '', 'unknown', {}])
+    OauthCli.any_instance.stubs(:request).returns("")
+    load "../bin/oauthc"
     assert output =~ /Profile unknown not found/
   end
   

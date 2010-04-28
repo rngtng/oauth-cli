@@ -1,13 +1,22 @@
 // planned: 0.0.X
 // ---------------------------
+// on startup, open new profile creator if no profile avail and no params given
 // on exit, ask if connection data should be saved to profile
-// show list of example profiles
+
+
+0.0.5
+---------------------------
+show list of example profiles
+equalsign for params is now optional (e.g. 'oauthc -p bbc' now works )
+show auth token and secret after successful auth
+updated config params
 
 0.0.4
 ---------------------------
 introduced easy auth (by now for Qype API only)
 added tests
 "http://" for any host options got optional
+
 
 0.0.3
 ---------------------------

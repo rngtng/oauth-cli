@@ -9,7 +9,6 @@ rescue LoadError
 end
 
 CFG_FILE = ENV['OAUTHC_CONFIG_FILE'] || File.expand_path('~/.oauthconfig')
-
 #http://api.betterbecool.com/v1/places/1197081
 
 def show_help
@@ -59,42 +58,45 @@ end
 #parse CLI input
 method, uri, body, opt, profile = OauthCli.parse_args(ARGV)
 
-@profiles = YAML.load_file(CFG_FILE) if File.exists?(CFG_FILE)
+@profiles = File.exists?(CFG_FILE) ? YAML.load_file(CFG_FILE) : {}
+
+######## CREATE client
+@client = OauthCli.new(opt)
+
+if !@client.connected? && profile
+  say " <%= color('#  ERROR: Profile #{profile} not found', RED) %>" unless @client.connect(@profiles[profile])
+end
 
 #find default profile
-if @profiles && (profile.nil? || @profiles[profile].nil?)
+if !@client.connected?
   @profiles.each do |key, values|
     profile = key if values['default']
   end
+  @client.connect(@profiles[profile])
 end
 
 #give profile selection
-if @profiles && (profile.nil? || @profiles[profile].nil?)
-  say " <%= 'Select one of the available profiles" #" or leave empty to create new one' %>"
-  @nr_profiles = @profiles.map
-  #say " <%= ' 0.  - create new one -' %>"
-  @nr_profiles.each_with_index do |profile, index|
-    say " <%= ' #{index+1}. #{profile.first}' %>"
+if !@client.connected? && @profiles.keys.any?
+  profile = choose do |menu|
+    menu.prompt = "Select a profile >>"
+    menu.choices(*(@profiles.keys << 'create new') )
   end
-  profile = ask ' >> '
-  profile  = @nr_profiles[profile.to_i-1].first if profile == profile.to_i.to_s && @nr_profiles[profile.to_i-1]
+  @client.connect(@profiles[profile])
 end
 
-@profiles[profile].each { |key, value| opt[key.to_sym] = value }  if @profiles[profile] #symbolize_keys
-
-if opt[:host].to_s.empty? || opt[:consumer_key].to_s.empty? || opt[:consumer_secret].to_s.empty?
-  
+if profile == 'create new'
+  puts "TODO: Create new profile"
 end
 
-#    unless cfg_options[profile]
-#      say " <%= color('#  ERROR: Profile #{profile} not found', RED) %>"
-#      show_help
-#    end
-#
-
-######## CREATE client
-
-@client = OauthCli.new(opt)
+unless @client.connected?
+  color = 'YELLOW'
+  say " <%= color('# -------------------------------------------------------------------------', #{color}) %>"
+  say " <%= color('# no consumer_key provided, please create a profile or call the oauthc with:', #{color}) %>"
+  say " <%= color('# oauthc --host <host> --consumer_key <consumer_key> --consumer_secret <consumer_secret>', #{color}) %>"
+  say " <%= color('# -------------------------------------------------------------------------', #{color}) %>"
+  #please get a key here: #{options[:host]}/api_consumers"
+  exit
+end
 
 if method && uri
   @client.request(method, uri, body)

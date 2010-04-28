@@ -14,25 +14,29 @@ class OauthCli
   attr_reader :options
   
   def initialize(options = {})
-    @options = options
+    @options = {}
+    connect(options)
+  end
+  
+  def connect(options = {})
+    return false unless options
+    options.each { |key, value| @options[key.to_sym] = value }
 
-    if options[:consumer_key].to_s.empty?
-      color = 'YELLOW'
-      say " <%= color('# -------------------------------------------------------------------------', #{color}) %>"
-      say " <%= color('# no consumer_key provided, please create a profile or call the script with:', #{color}) %>"
-      say " <%= color('# oauthc --consumer_key <consumer_key> --consumer_secret <consumer_secret>', #{color}) %>"
-      say " <%= color('# -------------------------------------------------------------------------', #{color}) %>"
-      #please get a key here: #{options[:host]}/api_consumers"
-      return
-    end
-    
     #add http if missing
     [:host, :reg_url, :auth_url].each do |key|
       @options[key] = "http://#{@options[key]}" unless @options[key] =~ /^http/
     end
     
     @consumer     = OAuth::Consumer.new(@options[:consumer_key], @options[:consumer_secret], :site => @options[:host])
+    # :request_token_path => "/oauth/example/request_token.php",
+    # :access_token_path  => "/oauth/example/access_token.php",
+    # :authorize_path     => "/oauth/example/authorize.php"
+    
     @access_token = OAuth::AccessToken.new(@consumer, @options[:token], @options[:token_secret]) if @options[:token]
+  end
+
+  def connected?
+    @options[:consumer_key] && @options[:consumer_secret] && @options[:host]
   end
 
   def self.parse_args(args, opt = {}, last_arg = nil)
