@@ -14,7 +14,7 @@ CFG_FILE = ENV['OAUTHC_CONFIG_FILE'] || File.expand_path('~/.oauthconfig')
 
 def show_help
   say <<-help
-oauthc version 0.0.4
+oauthc version 0.0.5
 Usage: oauthc [options] [http_method_verb uri [body]]
 
 Options:
@@ -52,17 +52,12 @@ Interactive Commands:
 help
 end
 
-if ARGV.any? { |arg| %w( -h --help -help help ).include?(arg) }
+if ARGV.any? { |arg| %w(-h --help -help help).include?(arg) }
   show_help
 end
 
 #parse CLI input
-opt = {}
-method, uri, body = ARGV.clone.delete_if do |kv|
-  next opt[$1.to_sym] = $2 if kv =~ /-?-([^=]+)=(.+)$/
-  false
-end
-profile = opt[:profile] || opt[:p] #shortcut for profile
+method, uri, body, opt, profile = OauthCli.parse_args(ARGV)
 
 @profiles = YAML.load_file(CFG_FILE) if File.exists?(CFG_FILE)
 
@@ -75,13 +70,13 @@ end
 
 #give profile selection
 if @profiles && (profile.nil? || @profiles[profile].nil?)
-  say " <%= 'Select one of the available profiles or leave empty to create new one' %>"
+  say " <%= 'Select one of the available profiles" #" or leave empty to create new one' %>"
   @nr_profiles = @profiles.map
   #say " <%= ' 0.  - create new one -' %>"
   @nr_profiles.each_with_index do |profile, index|
     say " <%= ' #{index+1}. #{profile.first}' %>"
   end
-  profile = ask '  >> '
+  profile = ask ' >> '
   profile  = @nr_profiles[profile.to_i-1].first if profile == profile.to_i.to_s && @nr_profiles[profile.to_i-1]
 end
 

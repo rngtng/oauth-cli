@@ -20,14 +20,14 @@ class OauthCli
       color = 'YELLOW'
       say " <%= color('# -------------------------------------------------------------------------', #{color}) %>"
       say " <%= color('# no consumer_key provided, please create a profile or call the script with:', #{color}) %>"
-      say " <%= color('# oauthc --consumer_key=<consumer_key> --consumer_secret=<consumer_secret>', #{color}) %>"
+      say " <%= color('# oauthc --consumer_key <consumer_key> --consumer_secret <consumer_secret>', #{color}) %>"
       say " <%= color('# -------------------------------------------------------------------------', #{color}) %>"
       #please get a key here: #{options[:host]}/api_consumers"
       return
     end
     
     #add http if missing
-    [:host, :reg_host, :auth_host].each do |key|
+    [:host, :reg_url, :auth_url].each do |key|
       @options[key] = "http://#{@options[key]}" unless @options[key] =~ /^http/
     end
     
@@ -35,13 +35,23 @@ class OauthCli
     @access_token = OAuth::AccessToken.new(@consumer, @options[:token], @options[:token_secret]) if @options[:token]
   end
 
+  def self.parse_args(args, opt = {}, last_arg = nil)
+    method, uri, body  = args.clone.delete_if do |kv|
+      next opt[$1.to_sym] = $2  if kv =~ /-?-([^=]+)=(.+)$/   #catches --param=value
+      next opt[last_arg] = kv   if last_arg && !opt[last_arg] #catches value
+      next last_arg = $1.to_sym if kv =~ /^-?-(.+)$/          #catches --param
+      false
+    end
+    [method, uri, body, opt, (opt.delete(:profile) || opt.delete(:p))]
+  end
+
   def request(method, uri, body = nil)
     if method =~ /auth/
       @request_token = @consumer.get_request_token({}, "oauth_callback" => "oob")
-      @options[:auth_host] ||= "#{@options[:host].gsub('api.', 'www.').gsub('v1/', '')}/mobile/authorize?oauth_token=" #That's for Qype only!!
+      @options[:auth_url] ||= "#{@options[:host].gsub('api.', 'www.').gsub('v1/', '')}/mobile/authorize" #That's for Qype only!!
       color = 'YELLOW'
       say " <%= color('# To authorize, go to ...', #{color}) %>"
-      say " <%= '#   ' + color('#{@options[:auth_host]}#{@request_token.token}', BOLD, UNDERLINE) %>\n"
+      say " <%= '#   ' + color('#{@options[:auth_url]}?oauth_token=#{@request_token.token}', BOLD, UNDERLINE) %>\n"
       say " <%= color('#  ... and enter given token verifier:', #{color}) %>"
       verifier = ask " |-- verifier >> "
 
@@ -55,6 +65,8 @@ class OauthCli
         say " <%= color('# -------------------------------------------------------------------------', #{color}) %>"
         say " <%= color('# Authorization SUCCESSFUL', BOLD, #{color}) %>"
         say " <%= color('# -------------------------------------------------------------------------', #{color}) %>"
+        say " <%= color(' token:        #{@access_token.token}', #{color}) %>"
+        say " <%= color(' token_secret: #{@access_token.secret}', #{color}) %>"
       rescue
         color = 'RED'
         say " <%= color('# -------------------------------------------------------------------------', #{color}) %>"
