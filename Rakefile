@@ -8,6 +8,6 @@ Echoe.new('oauth-cli', '0.0.5') do |p|
   p.author         = "rngtng - Tobias Bielohlawek"
   p.email          = "tobi @nospam@ rngtng.com"
   p.ignore_pattern = ["tmp/*", "script/*"]
-  p.development_dependencies = ["mocha >=0"]
+  p.development_dependencies = ["mocha >=0", "echoe >=0"]
   p.runtime_dependencies = ["highline >=1.5.1", "json >=1.1.9", "oauth >=0.3.6"]
 end
