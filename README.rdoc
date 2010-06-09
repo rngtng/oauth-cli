@@ -11,7 +11,7 @@ oauthc [options] [http_method_verb uri [body]]
 
 Options:
   --help             Display this message
-  --profile          Name of preset profile to load, put profiles to a .yml file in ~/.oauthconfig
+  --profile          Name of preset profile to load, put profiles to a yaml file in ~/.oauthconfig
   --host             Host to connect to
   --consumer_key     Consumer Key
   --consumer_secret  Consumer Secret
@@ -54,18 +54,15 @@ oauthc was originally developed to test the {Qype API}[http://www.qype.com/devel
 == Hints
 * make sure to have rlwrap installed, to get CLI history support: http://utopia.knoware.nl/~hlub/rlwrap (or "port install rlwarp")
 
-
 * Bug reports, suggestions, updates: http://github.com/rngtng/oauth-cli/issues
 
 
 == Todos
-* save given keys to config, e.g. introduce 'save' command
-* go into config mode, if no profiles found and no params specified
-* better support for getting authkeys
+* check if host is valid
 * testing + better docs
 * check oauth client, streamline!?
 * add autocomplete for interactive commands
-* add auth profiles for Qype, Twitter etc!?
+* profile delete and rename
 
 == FAQ
 

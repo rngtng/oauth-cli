@@ -5,6 +5,7 @@ Rakefile
 bin/oauthc
 lib/oauth_cli.rb
 oauth-cli.gemspec
+profiles.yaml
 test/helper.rb
 test/test_oauth_cli.rb
 test/test_oauthc.rb

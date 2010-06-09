@@ -1,7 +1,15 @@
 // planned: 0.0.X
 // ---------------------------
-// on startup, open new profile creator if no profile avail and no params given
 // on exit, ask if connection data should be saved to profile
+
+0.0.6
+---------------------------
+updated & cleanedup profile managment
+introduced profile creator to setup new profiles easily
+updated first journey UX: start profile creator if no profile avail and no params given
+added preset auth profiles for Qype, Twitter
+better support for getting authkeys with auto save to current profile
+streamlined output messages and prompts
 
 
 0.0.5
@@ -10,6 +18,7 @@ show list of example profiles
 equalsign for params is now optional (e.g. 'oauthc -p bbc' now works )
 show auth token and secret after successful auth
 updated config params
+
 
 0.0.4
 ---------------------------

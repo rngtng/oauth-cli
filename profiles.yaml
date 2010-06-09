@@ -1,0 +1,9 @@
+twitter:
+  :host:            https://twitter.com/
+  :reg_url:         twitter.com/oauth_clients
+  :auth_url:        twitter.com/oauth/authorize
+  
+qype:   
+  :host:            api.qype.com/v1
+  :reg_url:         www.qype.com/api_consumers
+  :auth_url:        www.qype.com/mobile/authorize

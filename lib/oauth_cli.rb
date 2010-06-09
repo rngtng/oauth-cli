@@ -1,6 +1,7 @@
 require 'highline/import'
 require 'oauth'
 require 'json'
+require 'yaml'
 
 begin
   require 'ap' #try to load awesome_print for nice json output
@@ -13,83 +14,54 @@ class OauthCli
 
   attr_reader :options
   
-  def initialize(options = {})
+  def initialize(profile = nil)
     @options = {}
-    connect(options)
+    connect(profile)
   end
   
-  def connect(options = {})
-    return false unless options
-    options.each { |key, value| @options[key.to_sym] = value }
-
+  def connect(profile)
+    return false if !profile.is_a?(Hash) && !OauthCli.profiles[profile]
+    @options = OauthCli.profiles[profile] || profile
+    
     #add http if missing
     [:host, :reg_url, :auth_url].each do |key|
       @options[key] = "http://#{@options[key]}" unless @options[key] =~ /^http/
     end
     
     @consumer     = OAuth::Consumer.new(@options[:consumer_key], @options[:consumer_secret], :site => @options[:host])
-    # :request_token_path => "/oauth/example/request_token.php",
-    # :access_token_path  => "/oauth/example/access_token.php",
-    # :authorize_path     => "/oauth/example/authorize.php"
-    
     @access_token = OAuth::AccessToken.new(@consumer, @options[:token], @options[:token_secret]) if @options[:token]
+
+    connected?
   end
 
   def connected?
+    # TODO check if host available?
     @options[:consumer_key] && @options[:consumer_secret] && @options[:host]
   end
-
-  def self.parse_args(args, opt = {}, last_arg = nil)
-    method, uri, body  = args.clone.delete_if do |kv|
-      next opt[$1.to_sym] = $2  if kv =~ /-?-([^=]+)=(.+)$/   #catches --param=value
-      next opt[last_arg] = kv   if last_arg && !opt[last_arg] #catches value
-      next last_arg = $1.to_sym if kv =~ /^-?-(.+)$/          #catches --param
-      false
-    end
-    [method, uri, body, opt, (opt.delete(:profile) || opt.delete(:p))]
+  
+  def auth?
+    @access_token
   end
 
+  def access_request_url
+    @request_token = @consumer.get_request_token({}, "oauth_callback" => "oob")
+    @options[:auth_url] ||= "#{@options[:host].gsub('api.', 'www.').gsub('v1/', '')}/mobile/authorize" #That's for Qype only!!
+    url = "#{@options[:auth_url]}?oauth_token=#{@request_token.token}"
+  end
+  
+  def access_token(verifier)
+    request_url unless @request_token
+    @access_token = @request_token.get_access_token({}, "oauth_verifier" => verifier)
+  end
+  
   def request(method, uri, body = nil)
-    if method =~ /auth/
-      @request_token = @consumer.get_request_token({}, "oauth_callback" => "oob")
-      @options[:auth_url] ||= "#{@options[:host].gsub('api.', 'www.').gsub('v1/', '')}/mobile/authorize" #That's for Qype only!!
-      color = 'YELLOW'
-      say " <%= color('# To authorize, go to ...', #{color}) %>"
-      say " <%= '#   ' + color('#{@options[:auth_url]}?oauth_token=#{@request_token.token}', BOLD, UNDERLINE) %>\n"
-      say " <%= color('#  ... and enter given token verifier:', #{color}) %>"
-      verifier = ask " |-- verifier >> "
-
-      begin
-        @access_token = @request_token.get_access_token({}, "oauth_verifier" => verifier)
-
-        @options[:token] = @access_token.token
-        @options[:token_secret] = @access_token.secret
-
-        color = 'GREEN'
-        say " <%= color('# -------------------------------------------------------------------------', #{color}) %>"
-        say " <%= color('# Authorization SUCCESSFUL', BOLD, #{color}) %>"
-        say " <%= color('# -------------------------------------------------------------------------', #{color}) %>"
-        say " <%= color(' token:        #{@access_token.token}', #{color}) %>"
-        say " <%= color(' token_secret: #{@access_token.secret}', #{color}) %>"
-      rescue
-        color = 'RED'
-        say " <%= color('# -------------------------------------------------------------------------', #{color}) %>"
-        say " <%= color('# Authorization FAILED', BOLD, #{color}) %>"
-        say " <%= color('# -------------------------------------------------------------------------', #{color}) %>"
-      end
-      return
-    end
-
     unless %w(get post put delete).include? method.to_s
-      color = 'RED'
-      say " <%= color('# -------------------------------------------------------------------------', #{color}) %>"
-      say " <%= color('# Wrong HTTP Method: #{method}  - calling #{@options[:host]}#{uri}', BOLD, #{color}) %>"
-      say " <%= color('# -------------------------------------------------------------------------', #{color}) %>"
+      say_message "Wrong HTTP Method: #{method}  - calling #{@options[:host]}#{uri}", 'RED'
       return
     end
 
-    uri  = ask " |-- request uri >> " if !uri
-    body = ask " |-- request body >> " if !body && (method == "post" || method == "put")
+    uri  = ask_prompt "request uri" if !uri
+    body = ask_prompt "request body" if !body && (method == "post" || method == "put")
     
     url = @options[:host] + uri
 
@@ -101,9 +73,7 @@ class OauthCli
     header = response.header
 
     color = (response.code.to_i < 400) ? 'GREEN' : 'RED'
-    say " <%= color('# -------------------------------------------------------------------------', #{color}) %>"
-    say " <%= color('# Status: #{header.code} #{header.message}  - calling #{@options[:host]}#{uri}', BOLD, #{color}) %>"
-    say " <%= color('# -------------------------------------------------------------------------', #{color}) %>"
+    say_message "Status: #{header.code} #{header.message}  - calling #{@options[:host]}#{uri}", color
 
     body = response.body
     if header.content_type =~ /json/
@@ -116,4 +86,96 @@ class OauthCli
     say body
   end
 
+  ####### Static Setup Mehtods
+  
+  def self.inialize
+    @profiles || {}
+  end
+  
+  def self.load_profiles(cfg_file, tmp_file)
+    @cfg_file = cfg_file #keep so we can save back to file
+    @profiles = load(cfg_file)
+    @templates = load(tmp_file)
+  end
+  
+  def self.save_profiles
+    return unless @cfg_file
+    File.open(@cfg_file, 'w') do |out|
+       YAML.dump(@profiles, out)
+    end
+  end
+
+  def self.add_profile(name, values)
+    @profiles[name] = values
+    name
+  end
+    
+  def self.profiles
+    @profiles || {}
+  end
+
+  def self.templates
+    @templates || {}
+  end
+
+  def self.parse_args(args, opt = {}, last_arg = nil)
+    @profiles ||= {}
+    method, uri, body  = args.clone.delete_if do |kv|
+      next opt[$1.to_sym] = $2  if kv =~ /-?-([^=]+)=(.+)$/   #catches --param=value
+      next opt[last_arg] = kv   if last_arg && !opt[last_arg] #catches value
+      next last_arg = $1.to_sym if kv =~ /^-?-(.+)$/          #catches --param
+      false
+    end
+    
+    profile = opt.delete(:profile) || opt.delete(:p)
+
+    if !@profiles[profile] && opt.any?
+      profile ||= 'commandline'
+      @profiles[profile] = opt
+      save_profiles unless profile == 'commandline'
+    end        
+      
+    if !@profiles[profile] && @default_profile
+      profile = @default_profile
+      say "Using default profile: #{profile}"
+    end
+    
+    if profile && !@profiles[profile]
+      say_error "Profile #{profile} not found"
+      profile = nil
+    end
+    
+    [method, uri, body, profile]
+  end
+  
+  private
+  def self.load(file)
+    hash = YAML.load_file(file) if File.exists?(file)
+    return {} unless hash.is_a?(Hash)
+    
+    #symbolises keys and finde default profile
+    hash.each do |profile, options|
+      options.keys.each do |key| 
+        hash[profile][key.to_sym] = hash[profile].delete(key)
+        @default_profile = profile if key.to_sym == :default
+      end
+    end
+    hash
+  end
+  
+end
+
+
+def say_message(message, color = 'WHITE')
+  say "<%= color('# -------------------------------------------------------------------------', #{color}) %>"
+  say "<%= color('# #{message}', BOLD, #{color} ) %>"
+  say "<%= color('# -------------------------------------------------------------------------', #{color}) %>"
+end
+
+def say_error(error)
+  say_message "ERROR: #{error}", 'RED'
+end
+
+def ask_prompt(question)
+  ask " |-- #{question} >> "  
 end
