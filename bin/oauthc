@@ -5,7 +5,7 @@ require 'pp'
 
 #workaround to make it work in dev & production mode, any better solutions here??
 begin
-  require "#{File.dirname(File.dirname(File.expand_path(__FILE__)))}/lib/oauth_cli"  
+  require "#{File.dirname(File.dirname(File.expand_path(__FILE__)))}/lib/oauth_cli"
 rescue LoadError
   require "oauth_cli"
 end
@@ -15,7 +15,7 @@ PROFILE_TMP_FILE = "#{File.dirname(File.dirname(File.expand_path(__FILE__)))}/pr
 
 def show_help
   say <<-help
-oauthc version 0.0.6
+oauthc version 0.0.7
 Usage: oauthc [options] [http_method_verb uri [body]]
 
 Options:
@@ -67,8 +67,8 @@ method, uri, body, profile = OauthCli.parse_args(ARGV)
 @client = OauthCli.new(profile)
 
 if !@client.connected?
-  say_message("Welcome to Oauth Commandline Client.", 'YELLOW') 
-    
+  say_message("Welcome to Oauth Commandline Client.", 'YELLOW')
+
   #give profile selection
   if OauthCli.profiles.keys.any?
     profile = choose do |menu|
@@ -81,30 +81,33 @@ if !@client.connected?
 
   while !@client.connected?
     say("No profiles setups were found, please create one first.") if OauthCli.profiles.empty?
-    
+
     profile = template = choose do |menu|
       menu.header = "Choose profile template"
       menu.prompt = ">> "
       menu.choices(*(OauthCli.templates.keys << 'custom') )
     end
-    
+
     say_message "Creating #{template} profile", 'YELLOW'
-    
+
     say "Profile '#{profile}' already exists, please choose another name." if OauthCli.profiles[profile]
     profile = ask_prompt "Profile name" if !OauthCli.templates[profile] || OauthCli.profiles[profile]
-    
+
     OauthCli.add_profile(profile, OauthCli.templates[template] || {})
-    
-    say "\n <%= 'Go to ' + color('#{OauthCli.profiles[profile][:reg_url]}', BOLD, UNDERLINE) + ' to register and retrieve your oauth consumer key and secret' %>\n\n" if OauthCli.profiles[profile][:reg_url]
-    
+
+    if OauthCli.profiles[profile][:reg_url]
+      say "\n <%= 'Go to ' + color('#{OauthCli.profiles[profile][:reg_url]}', BOLD, UNDERLINE) + ' to register and retrieve your oauth consumer key and secret' %>\n\n"
+      Launchy.open(OauthCli.profiles[profile][:reg_url])
+    end
+
     OauthCli.profiles[profile][:host] ||= ask_prompt "Oauth Host"
     OauthCli.profiles[profile][:auth_url] ||= ask_prompt "Authorization Url"
     OauthCli.profiles[profile][:consumer_key] = ask_prompt "Consumer Key"
     OauthCli.profiles[profile][:consumer_secret] = ask_prompt "Consumer Secret"
-    
+
     @client.connect(profile)
     OauthCli.save_profiles
-  
+
     say_message "Profile Setup SUCCESSFUL - saved as: #{profile}", 'GREEN'
     say "Type 'auth' ot authorize profile, type 'help' for more"
   end
@@ -141,16 +144,18 @@ if !ENV['__REPL_WRAPPED'] && system("which rlwrap > /dev/null 2> /dev/null")
   rlargs = ""
   #rlargs << " -f #{cfile}" if cfile
   rlargs << " -H #{hfile}" if hfile
-  
+
   ARGV << "-p=#{profile}" if profile
 
   exec "rlwrap #{rlargs} #$0 #{ARGV.join(' ')}"
 end
 
-prompt = ENV['REPL_PROMPT'] || "#{profile} >>"
+
 
 loop do
   begin
+    auth = @client.auth? ? '(authorized)' : '(unauthorized)'
+    prompt = ENV['REPL_PROMPT'] || "#{profile} #{auth} >>"
     input = ask "<%= color('#{prompt}', BOLD) %> "
     command, uri, body = input.chomp.split(' ')
 
@@ -161,6 +166,7 @@ loop do
       say_message "Starting Authorization", 'YELLOW'
       say "\n"
       say " <%= 'Go to ' + color('#{@client.access_request_url}', BOLD, UNDERLINE) + ' to retrieve token verifier' %>\n\n"
+      Launchy.open(@client.access_request_url)
       verifier = ask_prompt "verifier"
 
       begin
@@ -168,24 +174,21 @@ loop do
         OauthCli.profiles[profile][:token] = @access_token.token
         OauthCli.profiles[profile][:secret] = @access_token.secret
         OauthCli.save_profiles
-        
+
         say_message "Authorization SUCCESSFUL and saved to profile: #{profile}", 'GREEN'
         say " token:  #{@access_token.token}"
         say " secret: #{@access_token.secret}"
       rescue => message
         say_message "Authorization FAILED: #{message}", 'RED'
-      end      
+      end
     else
       @client.request(command, uri, body)
     end
-    
+
     next
   rescue NoMethodError, Interrupt
-    #save_config unless profile
-    puts
+    #TODO save_config unless profile
     exit
-  #rescue
   end
 
 end
-

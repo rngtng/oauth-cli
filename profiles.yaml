@@ -7,3 +7,8 @@ qype:
   :host:            api.qype.com/v1
   :reg_url:         www.qype.com/api_consumers
   :auth_url:        www.qype.com/mobile/authorize
+
+soundcloud:
+  :host:            https://api.soundcloud.com/
+  :reg_url:         http://soundcloud.com/you/apps
+  :auth_url:        http://soundcloud.com/oauth/authorize

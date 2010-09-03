@@ -1,6 +1,13 @@
 // planned: 0.0.X
 // ---------------------------
 // on exit, ask if connection data should be saved to profile
+// completion
+
+0.0.7
+--------------------------
+open url directly in browser via launchy (thx @pht for pointing me)
+added soundcloud profile
+
 
 0.0.6
 ---------------------------

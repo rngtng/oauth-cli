@@ -63,6 +63,8 @@ oauthc was originally developed to test the {Qype API}[http://www.qype.com/devel
 * check oauth client, streamline!?
 * add autocomplete for interactive commands
 * profile delete and rename
+* history scope of profile name
+* support for urlparams in post/put body
 
 == FAQ
 
