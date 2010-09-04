@@ -64,7 +64,7 @@ class OauthCli
     uri  = ask_prompt "request uri" if !uri
     body = ask_prompt "request body" if !body && (method == "post" || method == "put")
 
-    url = @options[:host] + uri
+    url = @options[:host] + uri.match(/^\/?(.+)/)[1] #removes trailing slash
 
     @options[:mime_type]    ||= (url =~ /\.json/) ? "application/json" : "application/xml"
     @options[:content_type] ||= (url =~ /\.json/) ? "application/json" : "application/xml"
@@ -74,7 +74,7 @@ class OauthCli
     header = response.header
 
     color = (response.code.to_i < 400) ? 'GREEN' : 'RED'
-    say_message "Status: #{header.code} #{header.message}  - calling #{@options[:host]}#{uri}", color
+    say_message "Status: #{header.code} #{header.message}  - calling #{url}", color
 
     body = response.body
     if header.content_type =~ /json/

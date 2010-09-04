@@ -12,6 +12,7 @@ end
 
 PROFILE_CFG_FILE = ENV['OAUTHC_CONFIG_FILE'] || File.expand_path('~/.oauthconfig')
 PROFILE_TMP_FILE = "#{File.dirname(File.dirname(File.expand_path(__FILE__)))}/profiles.yaml"
+COMPLETION_FILE  = "#{File.dirname(File.dirname(File.expand_path(__FILE__)))}/completion"
 
 def show_help
   say <<-help
@@ -120,16 +121,7 @@ end
 
 ######## START Interactive mode
 
-## following lines are shamelessly stolen from repl ->  http://http://github.com/defunkt/repl
-# completion_dir = ENV['REPL_COMPLETION_DIR'] || "~/.repl"
-# if File.exists?(cdir = File.expand_path(completion_dir))
-#   script = ARGV.detect { |a| a !~ /^-/ }
-#   if script
-#     cfile = Dir[cdir + '/' + File.basename(script)].first
-#     cfile = nil if cfile && !File.exists?(cfile)
-#   end
-# end
-
+## following lines are shamelessly stolen from repl ->  http://github.com/defunkt/repl
 history_dir = ENV['OAUTHC_HISTORY_DIR'] || "~/"
 if File.exists?(hdir = File.expand_path(history_dir))
   if script = ARGV.detect { |a| a !~ /^-/ }
@@ -141,8 +133,8 @@ end
 if !ENV['__REPL_WRAPPED'] && system("which rlwrap > /dev/null 2> /dev/null")
   ENV['__REPL_WRAPPED'] = '0'
 
-  rlargs = ""
-  #rlargs << " -f #{cfile}" if cfile
+  rlargs = ''  #"-r " <- to remember input, unfortunately, it remember output to
+  rlargs << " -f #{COMPLETION_FILE}" if File.exists?(COMPLETION_FILE)
   rlargs << " -H #{hfile}" if hfile
 
   ARGV << "-p=#{profile}" if profile
@@ -154,9 +146,8 @@ end
 
 loop do
   begin
-    auth = @client.auth? ? '(authorized)' : '(unauthorized)'
-    prompt = ENV['REPL_PROMPT'] || "#{profile} #{auth} >>"
-    input = ask "<%= color('#{prompt}', BOLD) %> "
+    auth = @client.auth? ? "'(authorized)', GREEN)" : "color('(unauthorized)', RED)"
+    input = ask "<%= color('#{profile}', BOLD) %> <%= color( #{auth} %> >> "
     command, uri, body = input.chomp.split(' ')
 
     next warn(show_commands) if command =~ /^(help|\?)$/
