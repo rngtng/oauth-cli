@@ -1,12 +1,12 @@
 // planned: 0.0.X
 // ---------------------------
 // on exit, ask if connection data should be saved to profile
-// completion
 
 0.0.7
 --------------------------
-open url directly in browser via launchy (thx @pht for pointing me)
+open url directly in browser via launchy gem (thx @pht for pointing me)
 added soundcloud profile
+add autocomplete for interactive commands (get, put, post, delete, auth, help)
 
 
 0.0.6

@@ -21,7 +21,7 @@ Options:
   --content_type     Set content type, default: application/xml
 
 Request params (leave blank for interactive mode)
-   http_method_verb  nay method of get, post, put or delete
+   http_method_verb  any method of get, post, put or delete
    uri               Uri to request
    body              Body attached to request
 
@@ -52,7 +52,7 @@ oauthc was originally developed to test the {Qype API}[http://www.qype.com/devel
 
 
 == Hints
-* make sure to have rlwrap installed, to get CLI history support: http://utopia.knoware.nl/~hlub/rlwrap (or "port install rlwarp")
+* make sure to have rlwrap installed, to get CLI history support: http://utopia.knoware.nl/~hlub/rlwrap (or "port install rlwarp" or "brew install rlwrap")
 
 * Bug reports, suggestions, updates: http://github.com/rngtng/oauth-cli/issues
 
@@ -61,10 +61,10 @@ oauthc was originally developed to test the {Qype API}[http://www.qype.com/devel
 * check if host is valid
 * testing + better docs
 * check oauth client, streamline!?
-* add autocomplete for interactive commands
+* add autocomplete for API commands
 * profile delete and rename
 * history scope of profile name
-* support for urlparams in post/put body
+* support for urlencoded in post/put body -> set correct mime type
 
 == FAQ
 
