@@ -5,9 +5,10 @@
 0.0.7
 --------------------------
 open url directly in browser via launchy gem (thx @pht for pointing me)
-added soundcloud profile
 add autocomplete for interactive commands (get, put, post, delete, auth, help)
-
+added soundcloud profile
+show auth status in prompt
+fixed trailing slash in uri
 
 0.0.6
 ---------------------------
