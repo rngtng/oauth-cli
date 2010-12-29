@@ -146,7 +146,7 @@ end
 
 loop do
   begin
-    auth = @client.auth? ? "'(authorized)', GREEN)" : "color('(unauthorized)', RED)"
+    auth = @client.auth? ? "'(authorized)', GREEN)" : "'(unauthorized)', RED)"
     input = ask "<%= color('#{profile}', BOLD) %> <%= color( #{auth} %> >> "
     command, uri, body = input.chomp.split(' ')
 
