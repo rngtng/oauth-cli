@@ -2,6 +2,12 @@
 // ---------------------------
 // on exit, ask if connection data should be saved to profile
 
+0.0.8
+--------------------------
+fix color formatting. Closes gh-1 (by Alexey Zakhlestin <indeyets@gmail.com>)
+updated to bundler, removed echoe
+
+
 0.0.7
 --------------------------
 open url directly in browser via launchy gem (thx @pht for pointing me)
@@ -9,6 +15,7 @@ add autocomplete for interactive commands (get, put, post, delete, auth, help)
 added soundcloud profile
 show auth status in prompt
 fixed trailing slash in uri
+
 
 0.0.6
 ---------------------------
